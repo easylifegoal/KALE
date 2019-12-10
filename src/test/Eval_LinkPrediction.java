@@ -103,6 +103,7 @@ public class Eval_LinkPrediction {
 		int iTotalHits10_raw = 0;
 		double dMedian_raw = 0.0;
 
+		int isTrue = 0;
 		
 		while ((line = reader.readLine()) != null) {
 			System.out.println("triple:" + iCnt/2);
@@ -122,11 +123,11 @@ public class Eval_LinkPrediction {
 			
 			for (int iLeftID = 0; iLeftID < iNumberOfEntities; iLeftID++) {
 				double dValue = 0.0;
-				String negTiple = iLeftID + "\t" + iRelationID + "\t" +iObjectID;
+				String negTriple = iLeftID + "\t" + iRelationID + "\t" +iObjectID;
 				for (int p = 0; p < iNumberOfFactors; p++) {
 					dValue -= Math.abs(MatrixE.get(iLeftID, p) + MatrixR.get(iRelationID, p) - MatrixE.get(iObjectID, p));
 				}
-				if(!lstTriples.containsKey(negTiple)){
+				if(!lstTriples.containsKey(negTriple)){
 					if (dValue > dTargetValue) {
 						iLeftRank_filt++;
 					}
@@ -261,8 +262,12 @@ public class Eval_LinkPrediction {
 			iTotalHits10_raw += iRightHitsAt10_raw;
 			iRawList.add(dRightRank_raw);
 			iCnt++;	
-			
+			if (iLeftHitsAt1_filt == 1 && iRightHitsAt1_filt == 1) {
+				isTrue++;
+				System.out.println(iSubjectID + "\t" + iRelationID + "\t" + iObjectID + " is True");
+			}
 		}
+		System.out.println("rate is " + (isTrue / (iCnt / 2.0)));
 		Collections.sort(iFiltList);
 		int indx=iFiltList.size()/2;
 		if (iFiltList.size()%2==0) {
