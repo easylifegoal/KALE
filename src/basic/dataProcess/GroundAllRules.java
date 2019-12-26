@@ -141,14 +141,9 @@ public class GroundAllRules {
 			int iObjectID = Integer.parseInt(tokens[2]);
 			if (!LstInferredTriples.containsKey(iRelationID)) {
 				HashMap<Integer,HashMap<Integer,Boolean>> tmpMap = new HashMap<Integer,HashMap<Integer,Boolean>>();
-				if(!tmpMap.containsKey(iSubjectID)){
-					HashMap<Integer,Boolean> tmpMap_in = new HashMap<Integer,Boolean>();
-					tmpMap_in.put(iObjectID,true);
-					tmpMap.put(iSubjectID, tmpMap_in);
-				}
-				else{
-					tmpMap.get(iSubjectID).put(iObjectID,true);
-					}
+				HashMap<Integer,Boolean> tmpMap_in = new HashMap<Integer,Boolean>();
+				tmpMap_in.put(iObjectID,true);
+				tmpMap.put(iSubjectID, tmpMap_in);
 				LstInferredTriples.put(iRelationID, tmpMap);
 			} else {
 				HashMap<Integer,HashMap<Integer,Boolean>> tmpMap = LstInferredTriples.get(iRelationID);
@@ -289,49 +284,49 @@ public class GroundAllRules {
 					}
 			}
 
-			for(int iTrdRelation: lstTrdRelation){
-				HashMap<Integer,HashMap<Integer,Boolean>> mapTrdRel = LstInferredTriples.get(iTrdRelation);
-				lstSubjectID = mapTrdRel.keySet().iterator();
-				while (lstSubjectID.hasNext()) {
-					int iSubjectID = lstSubjectID.next();
-					ArrayList<Integer> lstObjectID = new ArrayList<Integer>(mapTrdRel.get(iSubjectID).keySet());
-					int iTrdSize = lstObjectID.size();
-					for (int iTrdIndex = 0; iTrdIndex < iTrdSize; iTrdIndex++) {
-						int iObjectID = lstObjectID.get(iTrdIndex);					
-						if(mapFstRel.containsKey(iSubjectID)){
-							ArrayList<Integer> lstMedianID = new ArrayList<Integer>(mapFstRel.get(iSubjectID).keySet());
-							int iFstSize = lstMedianID.size();
-							for (int iFstIndex = 0; iFstIndex < iFstSize; iFstIndex++) {
-								int iMedianID = lstMedianID.get(iFstIndex);
-								String infer=iMedianID + "\t" + iSndRelation + "\t" + iObjectID;
-								String strKey = "(" + iSubjectID + "\t" + iFstRelation + "\t" + iMedianID + ")\t"
-										+"(" + iMedianID + "\t" + iSndRelation + "\t" + iObjectID + ")\t"
-										+ "(" + iSubjectID + "\t" + iTrdRelation + "\t" + iObjectID + ")";
-								if (!tmpLst.containsKey(strKey)&&!TrainingTriples_list.containsKey(infer)) {
-									writer.write(strKey + "\n");
-									tmpLst.put(strKey, true);
-								}
-							}
-						}
-
-						
-						Iterator<Integer> iterMedianID = mapSndRel.keySet().iterator();
-						while (iterMedianID.hasNext()) {
-							int iMedianID = iterMedianID.next();
-							if(mapSndRel.get(iMedianID).containsKey(iObjectID)){
-								String infer=iSubjectID + "\t" + iFstRelation + "\t" + iMedianID;
-								String strKey = "(" + iSubjectID + "\t" + iFstRelation + "\t" + iMedianID + ")\t"
-										+"(" + iMedianID + "\t" + iSndRelation + "\t" + iObjectID + ")\t"
-										+ "(" + iSubjectID + "\t" + iTrdRelation + "\t" + iObjectID + ")";
-								if (!tmpLst.containsKey(strKey)&&!TrainingTriples_list.containsKey(infer)) {
-									writer.write( strKey + "\n");
-									tmpLst.put(strKey, true);
-								}
-							}
-						}
-					}
-				}
-			}
+//			for(int iTrdRelation: lstTrdRelation){
+//				HashMap<Integer,HashMap<Integer,Boolean>> mapTrdRel = LstInferredTriples.get(iTrdRelation);
+//				lstSubjectID = mapTrdRel.keySet().iterator();
+//				while (lstSubjectID.hasNext()) {
+//					int iSubjectID = lstSubjectID.next();
+//					ArrayList<Integer> lstObjectID = new ArrayList<Integer>(mapTrdRel.get(iSubjectID).keySet());
+//					int iTrdSize = lstObjectID.size();
+//					for (int iTrdIndex = 0; iTrdIndex < iTrdSize; iTrdIndex++) {
+//						int iObjectID = lstObjectID.get(iTrdIndex);
+//						if(mapFstRel.containsKey(iSubjectID)){
+//							ArrayList<Integer> lstMedianID = new ArrayList<Integer>(mapFstRel.get(iSubjectID).keySet());
+//							int iFstSize = lstMedianID.size();
+//							for (int iFstIndex = 0; iFstIndex < iFstSize; iFstIndex++) {
+//								int iMedianID = lstMedianID.get(iFstIndex);
+//								String infer=iMedianID + "\t" + iSndRelation + "\t" + iObjectID;
+//								String strKey = "(" + iSubjectID + "\t" + iFstRelation + "\t" + iMedianID + ")\t"
+//										+"(" + iMedianID + "\t" + iSndRelation + "\t" + iObjectID + ")\t"
+//										+ "(" + iSubjectID + "\t" + iTrdRelation + "\t" + iObjectID + ")";
+//								if (!tmpLst.containsKey(strKey)&&!TrainingTriples_list.containsKey(infer)) {
+//									writer.write(strKey + "\n");
+//									tmpLst.put(strKey, true);
+//								}
+//							}
+//						}
+//
+//
+//						Iterator<Integer> iterMedianID = mapSndRel.keySet().iterator();
+//						while (iterMedianID.hasNext()) {
+//							int iMedianID = iterMedianID.next();
+//							if(mapSndRel.get(iMedianID).containsKey(iObjectID)){
+//								String infer=iSubjectID + "\t" + iFstRelation + "\t" + iMedianID;
+//								String strKey = "(" + iSubjectID + "\t" + iFstRelation + "\t" + iMedianID + ")\t"
+//										+"(" + iMedianID + "\t" + iSndRelation + "\t" + iObjectID + ")\t"
+//										+ "(" + iSubjectID + "\t" + iTrdRelation + "\t" + iObjectID + ")";
+//								if (!tmpLst.containsKey(strKey)&&!TrainingTriples_list.containsKey(infer)) {
+//									writer.write( strKey + "\n");
+//									tmpLst.put(strKey, true);
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}
 			writer.flush();
 
 
@@ -342,13 +337,13 @@ public class GroundAllRules {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		int iEntities = 14951;
+		int iEntities = 538;
 		// Input file:
-		String fnRelationIDMap = "datasets\\wn18\\relationid.txt";
-		String fnRules = "datasets\\wn18\\wn18_rule";
-		String fnTrainingTriples = "datasets\\wn18\\train.txt";
+		String fnRelationIDMap = "datasets\\lubm1000000\\relationid.txt";
+		String fnRules = "datasets\\lubm1000000\\lubm1000000_rule";
+		String fnTrainingTriples = "datasets\\lubm1000000\\train.txt";
 		//Output file:
-        String fnOutput = "datasets\\wn18\\groundings.txt";
+        String fnOutput = "datasets\\lubm1000000\\groundings.txt";
         long startTime = System.currentTimeMillis();
         GroundAllRules generator = new GroundAllRules();
         generator.GroundRuleGeneration(iEntities,fnRelationIDMap, 

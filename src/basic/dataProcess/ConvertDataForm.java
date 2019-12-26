@@ -26,7 +26,7 @@ public class ConvertDataForm {
 	public HashMap<String, Integer> MapEntityID = null;
     
 	/**
-	 * @param args
+	 * @param
 	 */	
 	public void convert_data( 
 			String fn_Ent,
@@ -130,15 +130,15 @@ public class ConvertDataForm {
 	public static void main(String[] args) throws Exception{
 		// TODO Auto-generated method stub
         // Input file:
-		String fn_Ent = "datasets\\wn18\\entityid.txt";
-		String fn_Rel = "datasets\\wn18\\relationid.txt";
-		String fn_train = "datasets\\wn18\\wn18_triples.train";
-		String fn_valid = "datasets\\wn18\\wn18_triples.valid";
-		String fn_test = "datasets\\wn18\\wn18_triples.test";
+		String fn_Ent = "datasets\\lubm1000000\\entityid.txt";
+		String fn_Rel = "datasets\\lubm1000000\\relationid.txt";
+		String fn_train = "datasets\\lubm1000000\\lubm1000000_triples.train";
+		String fn_valid = "datasets\\lubm1000000\\lubm1000000_triples.valid";
+		String fn_test = "datasets\\lubm1000000\\lubm1000000_triples.test";
 		//Output file:
-		String fn_trainid = "datasets\\wn18\\train.txt";
-		String fn_validid = "datasets\\wn18\\valid.txt";
-		String fn_testid = "datasets\\wn18\\test.txt";
+		String fn_trainid = "datasets\\lubm1000000\\train.txt";
+		String fn_validid = "datasets\\lubm1000000\\valid.txt";
+		String fn_testid = "datasets\\lubm1000000\\test.txt";
 
 		ConvertDataForm infer = new ConvertDataForm();
         infer.convert_data(

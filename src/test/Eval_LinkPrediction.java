@@ -3,6 +3,7 @@ package test;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,8 +18,8 @@ public class Eval_LinkPrediction {
 	
 	public Matrix MatrixE = null;
 	public Matrix MatrixR = null;
-	List<Double> iFiltList = new ArrayList<Double>();
-	List<Double> iRawList = new ArrayList<Double>();
+	List<Double> iFilterList = new ArrayList<>();
+	List<Double> iRawList = new ArrayList<>();
 	public HashMap<String, Boolean> lstTriples = null;
 	
 	
@@ -48,27 +49,25 @@ public class Eval_LinkPrediction {
 		MatrixR.load(fnMatrixR);
 		
 		BufferedReader train = new BufferedReader(new InputStreamReader(
-				new FileInputStream(fnTrainTriples), "UTF-8"));	
+				new FileInputStream(fnTrainTriples), StandardCharsets.UTF_8));
 		BufferedReader valid = new BufferedReader(new InputStreamReader(
-				new FileInputStream(fnValidTriples), "UTF-8"));
+				new FileInputStream(fnValidTriples), StandardCharsets.UTF_8));
 		BufferedReader test = new BufferedReader(new InputStreamReader(
-				new FileInputStream(fnTestTriples), "UTF-8"));
-		lstTriples = new HashMap<String, Boolean> ();
-		String line = "";
+				new FileInputStream(fnTestTriples), StandardCharsets.UTF_8));
+		lstTriples = new HashMap<>();
+		String line;
 		while ((line = train.readLine()) != null) {
 			if (!lstTriples.containsKey(line.trim())) {
 
 					lstTriples.put(line.trim(), true);
 				} 
-		}	
-		line = "";
+		}
 		while ((line = valid.readLine()) != null) {
 			if (!lstTriples.containsKey(line.trim())) {
 
 				lstTriples.put(line.trim(), true);
 			} 
 		}
-		line = "";
 		while ((line = test.readLine()) != null) {
 			if (!lstTriples.containsKey(line.trim())) {
 
@@ -84,16 +83,16 @@ public class Eval_LinkPrediction {
 	
 	public void evaluate(String fnTestTriples) throws Exception {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				new FileInputStream(fnTestTriples), "UTF-8"));
-		String line = "";
+				new FileInputStream(fnTestTriples), StandardCharsets.UTF_8));
+		String line;
 		int iCnt = 0;
-		double dTotalMeanRank_filt = 0.0;
-		double dTotalMRR_filt = 0.0;
-		int iTotalHits1_filt = 0;
-		int iTotalHits3_filt = 0;
-		int iTotalHits5_filt = 0;
-		int iTotalHits10_filt = 0;
-		double dMedian_filt = 0.0;
+		double dTotalMeanRank_filter = 0.0;
+		double dTotalMRR_filter = 0.0;
+		int iTotalHits1_filter = 0;
+		int iTotalHits3_filter = 0;
+		int iTotalHits5_filter = 0;
+		int iTotalHits10_filter = 0;
+		double dMedian_filter;
 		
 		double dTotalMeanRank_raw = 0.0;
 		double dTotalMRR_raw = 0.0;
@@ -101,7 +100,7 @@ public class Eval_LinkPrediction {
 		int iTotalHits3_raw = 0;
 		int iTotalHits5_raw = 0;
 		int iTotalHits10_raw = 0;
-		double dMedian_raw = 0.0;
+		double dMedian_raw;
 
 		int isTrue = 0;
 		
@@ -116,8 +115,8 @@ public class Eval_LinkPrediction {
 				dTargetValue -= Math.abs(MatrixE.get(iSubjectID, p) + MatrixR.get(iRelationID, p) - MatrixE.get(iObjectID, p));
 			}
 			
-			int iLeftRank_filt = 1;
-			int iLeftIdentical_filt = 0;
+			int iLeftRank_filter = 1;
+			int iLeftIdentical_filter = 0;
 			int iLeftRank_raw = 1;
 			int iLeftIdentical_raw = 0;
 			
@@ -129,10 +128,10 @@ public class Eval_LinkPrediction {
 				}
 				if(!lstTriples.containsKey(negTriple)){
 					if (dValue > dTargetValue) {
-						iLeftRank_filt++;
+						iLeftRank_filter++;
 					}
 					if (dValue == dTargetValue) {
-						iLeftIdentical_filt++;
+						iLeftIdentical_filter++;
 					}
 				}	
 				if (dValue > dTargetValue) {
@@ -143,21 +142,21 @@ public class Eval_LinkPrediction {
 				}
 			}
 
-			double dLeftRank_filt = (double)iLeftRank_filt;
-			double dLeftRank_raw = (double)(2.0 * iLeftRank_raw + iLeftIdentical_raw -1.0) / 2.0;
-			int iLeftHitsAt1_filt = 0,iLeftHitsAt3_filt = 0,iLeftHitsAt5_filt = 0,iLeftHitsAt10_filt = 0;
+			double dLeftRank_filter = iLeftRank_filter;
+			double dLeftRank_raw = (2.0 * iLeftRank_raw + iLeftIdentical_raw -1.0) / 2.0;
+			int iLeftHitsAt1_filter = 0, iLeftHitsAt3_filter = 0, iLeftHitsAt5_filter = 0, iLeftHitsAt10_filter = 0;
 			int iLeftHitsAt1_raw = 0,iLeftHitsAt3_raw = 0,iLeftHitsAt5_raw = 0,iLeftHitsAt10_raw = 0;
-			if (dLeftRank_filt <= 1.0) {
-				iLeftHitsAt1_filt = 1;
+			if (dLeftRank_filter <= 1.0) {
+				iLeftHitsAt1_filter = 1;
 			}
-			if (dLeftRank_filt <= 3.0) {
-				iLeftHitsAt3_filt = 1;
+			if (dLeftRank_filter <= 3.0) {
+				iLeftHitsAt3_filter = 1;
 			}
-			if (dLeftRank_filt <= 5.0) {
-				iLeftHitsAt5_filt = 1;
+			if (dLeftRank_filter <= 5.0) {
+				iLeftHitsAt5_filter = 1;
 			}
-			if (dLeftRank_filt <= 10.0) {
-				iLeftHitsAt10_filt = 1;
+			if (dLeftRank_filter <= 10.0) {
+				iLeftHitsAt10_filter = 1;
 			}
 			
 			if (dLeftRank_raw <= 1.0) {
@@ -173,13 +172,13 @@ public class Eval_LinkPrediction {
 				iLeftHitsAt10_raw = 1;
 			}
 		
-			dTotalMeanRank_filt += dLeftRank_filt;
-			dTotalMRR_filt += 1.0/(double)dLeftRank_filt;
-			iTotalHits1_filt += iLeftHitsAt1_filt;
-			iTotalHits3_filt += iLeftHitsAt3_filt;
-			iTotalHits5_filt += iLeftHitsAt5_filt;
-			iTotalHits10_filt += iLeftHitsAt10_filt;
-			iFiltList.add(dLeftRank_filt);
+			dTotalMeanRank_filter += dLeftRank_filter;
+			dTotalMRR_filter += 1.0/ dLeftRank_filter;
+			iTotalHits1_filter += iLeftHitsAt1_filter;
+			iTotalHits3_filter += iLeftHitsAt3_filter;
+			iTotalHits5_filter += iLeftHitsAt5_filter;
+			iTotalHits10_filter += iLeftHitsAt10_filter;
+			iFilterList.add(dLeftRank_filter);
 			
 			dTotalMeanRank_raw += dLeftRank_raw;
 			dTotalMRR_raw += 1.0/(double)dLeftRank_raw;
@@ -190,22 +189,22 @@ public class Eval_LinkPrediction {
 			iRawList.add(dLeftRank_raw);
 			iCnt++;
 			
-			int iRightRank_filt = 1;
-			int iRightIdentical_filt = 0;
+			int iRightRank_filter = 1;
+			int iRightIdentical_filter = 0;
 			int iRightRank_raw = 1;
 			int iRightIdentical_raw = 0;
 			for (int iRightID = 0; iRightID < iNumberOfEntities; iRightID++) {
 				double dValue = 0.0;
-				String negTiple = iSubjectID + "\t" + iRelationID + "\t" +iRightID;
+				String negTriple = iSubjectID + "\t" + iRelationID + "\t" +iRightID;
 				for (int p = 0; p < iNumberOfFactors; p++) {
 					dValue -= Math.abs(MatrixE.get(iSubjectID, p) + MatrixR.get(iRelationID, p) - MatrixE.get(iRightID, p));
 				}
-				if(!lstTriples.containsKey(negTiple)){
+				if(!lstTriples.containsKey(negTriple)){
 					if (dValue > dTargetValue) {
-						iRightRank_filt++;						
+						iRightRank_filter++;
 					}
 					if (dValue == dTargetValue) {
-						iRightIdentical_filt++;
+						iRightIdentical_filter++;
 					}					
 				}
 				if (dValue > dTargetValue) {
@@ -216,21 +215,21 @@ public class Eval_LinkPrediction {
 				}	
 			}
 			
-			double dRightRank_filt = (double)iRightRank_filt;
-			double dRightRank_raw = (double)(2.0 * iRightRank_raw + iRightIdentical_raw -1.0) / 2.0;
-			int iRightHitsAt1_filt = 0,iRightHitsAt3_filt = 0,iRightHitsAt5_filt = 0,iRightHitsAt10_filt = 0;
+			double dRightRank_filter = iRightRank_filter;
+			double dRightRank_raw = (2.0 * iRightRank_raw + iRightIdentical_raw -1.0) / 2.0;
+			int iRightHitsAt1_filter = 0, iRightHitsAt3_filter = 0, iRightHitsAt5_filter = 0, iRightHitsAt10_filter = 0;
 			int iRightHitsAt1_raw = 0,iRightHitsAt3_raw = 0,iRightHitsAt5_raw= 0,iRightHitsAt10_raw = 0;
-			if (dRightRank_filt <= 1.0) {
-				iRightHitsAt1_filt = 1;
+			if (dRightRank_filter <= 1.0) {
+				iRightHitsAt1_filter = 1;
 			}
-			if (dRightRank_filt <= 3.0) {
-				iRightHitsAt3_filt = 1;
+			if (dRightRank_filter <= 3.0) {
+				iRightHitsAt3_filter = 1;
 			}
-			if (dRightRank_filt <= 5.0) {
-				iRightHitsAt5_filt = 1;
+			if (dRightRank_filter <= 5.0) {
+				iRightHitsAt5_filter = 1;
 			}
-			if (dRightRank_filt <= 10.0) {
-				iRightHitsAt10_filt = 1;
+			if (dRightRank_filter <= 10.0) {
+				iRightHitsAt10_filter = 1;
 			}
 			
 			if (dRightRank_raw <= 1.0) {
@@ -246,35 +245,35 @@ public class Eval_LinkPrediction {
 				iRightHitsAt10_raw = 1;
 			}
 			
-			dTotalMeanRank_filt += dRightRank_filt;
-			dTotalMRR_filt += 1.0/(double)dRightRank_filt;
-			iTotalHits1_filt += iRightHitsAt1_filt;
-			iTotalHits3_filt += iRightHitsAt3_filt;
-			iTotalHits5_filt += iRightHitsAt5_filt;
-			iTotalHits10_filt += iRightHitsAt10_filt;
-			iFiltList.add(dRightRank_filt);
+			dTotalMeanRank_filter += dRightRank_filter;
+			dTotalMRR_filter += 1.0/ dRightRank_filter;
+			iTotalHits1_filter += iRightHitsAt1_filter;
+			iTotalHits3_filter += iRightHitsAt3_filter;
+			iTotalHits5_filter += iRightHitsAt5_filter;
+			iTotalHits10_filter += iRightHitsAt10_filter;
+			iFilterList.add(dRightRank_filter);
 			
 			dTotalMeanRank_raw += dRightRank_raw;
-			dTotalMRR_raw += 1.0/(double)dRightRank_raw;
+			dTotalMRR_raw += 1.0/ dRightRank_raw;
 			iTotalHits1_raw += iRightHitsAt1_raw;
 			iTotalHits3_raw += iRightHitsAt3_raw;
 			iTotalHits5_raw += iRightHitsAt5_raw;
 			iTotalHits10_raw += iRightHitsAt10_raw;
 			iRawList.add(dRightRank_raw);
 			iCnt++;	
-			if (iLeftHitsAt1_filt == 1 && iRightHitsAt1_filt == 1) {
+			if (iLeftHitsAt1_filter == 1 && iRightHitsAt1_filter == 1) {
 				isTrue++;
 				System.out.println(iSubjectID + "\t" + iRelationID + "\t" + iObjectID + " is True");
 			}
 		}
 		System.out.println("rate is " + (isTrue / (iCnt / 2.0)));
-		Collections.sort(iFiltList);
-		int indx=iFiltList.size()/2;
-		if (iFiltList.size()%2==0) {
-			dMedian_filt = (iFiltList.get(indx-1)+iFiltList.get(indx))/2.0;
+		Collections.sort(iFilterList);
+		int indx= iFilterList.size()/2;
+		if (iFilterList.size()%2==0) {
+			dMedian_filter = (iFilterList.get(indx-1)+ iFilterList.get(indx))/2.0;
 		}
 		else {
-			dMedian_filt = iFiltList.get(indx);
+			dMedian_filter = iFilterList.get(indx);
 		}
 		
 		Collections.sort(iRawList);
@@ -286,14 +285,14 @@ public class Eval_LinkPrediction {
 			dMedian_raw = iRawList.get(indx);
 		}
 		
-		System.out.println("Filt setting:");
-		System.out.println("MeanRank: "+(dTotalMeanRank_filt / (double)iCnt) + "\n"  
-				+ "MRR: "+(dTotalMRR_filt / (double)iCnt) + "\n" 
-				+ "Median: " + dMedian_filt + "\n" 
-				+ "Hit@1: "+((double)iTotalHits1_filt / (double)iCnt) + "\n" 
-				+ "Hit@3: " + ((double)iTotalHits3_filt / (double)iCnt) + "\n" 
-				+ "Hit@5: " +((double)iTotalHits5_filt / (double)iCnt)+ "\n"
-				+ "Hit@10: " +((double)iTotalHits10_filt / (double)iCnt)+ "\n");
+		System.out.println("Filter setting:");
+		System.out.println("MeanRank: "+(dTotalMeanRank_filter / (double)iCnt) + "\n"
+				+ "MRR: "+(dTotalMRR_filter / (double)iCnt) + "\n"
+				+ "Median: " + dMedian_filter + "\n"
+				+ "Hit@1: "+((double) iTotalHits1_filter / (double)iCnt) + "\n"
+				+ "Hit@3: " + ((double)iTotalHits3_filter / (double)iCnt) + "\n"
+				+ "Hit@5: " +((double) iTotalHits5_filter / (double)iCnt)+ "\n"
+				+ "Hit@10: " +((double) iTotalHits10_filter / (double)iCnt)+ "\n");
 		
 		System.out.println("Raw setting:");
 		System.out.println("MeanRank: "+(dTotalMeanRank_raw / (double)iCnt) + "\n"  

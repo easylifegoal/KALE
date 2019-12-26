@@ -1,11 +1,6 @@
 package kale.struct;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.Random;
 
 import basic.util.StringSplitter;
@@ -42,22 +37,22 @@ public class Matrix {
 		return iNumberOfColumns;
 	}
 	
-	public double get(int i, int j) throws Exception {
+	public double get(int i, int j) throws IOException {
 		if (i < 0 || i >= iNumberOfRows) {
-			throw new Exception("get error in DenseMatrix: RowID out of range");
+			throw new IOException("get error in DenseMatrix: RowID out of range");
 		}
 		if (j < 0 || j >= iNumberOfColumns) {
-			throw new Exception("get error in DenseMatrix: ColumnID out of range");
+			throw new IOException("get error in DenseMatrix: ColumnID out of range");
 		}
 		return pData[i][j];
 	}
 	
-	public void set(int i, int j, double dValue) throws Exception {
+	public void set(int i, int j, double dValue) throws IOException {
 		if (i < 0 || i >= iNumberOfRows) {
-			throw new Exception("set error in DenseMatrix: RowID out of range");
+			throw new IOException("set error in DenseMatrix: RowID out of range");
 		}
 		if (j < 0 || j >= iNumberOfColumns) {
-			throw new Exception("set error in DenseMatrix: ColumnID out of range");
+			throw new IOException("set error in DenseMatrix: ColumnID out of range");
 		}
 		pData[i][j] = dValue;
 	}
@@ -80,22 +75,22 @@ public class Matrix {
 		}
 	}
 	
-	public double getSum(int i, int j) throws Exception {
+	public double getSum(int i, int j) throws IOException {
 		if (i < 0 || i >= iNumberOfRows) {
-			throw new Exception("get error in DenseMatrix: RowID out of range");
+			throw new IOException("get error in DenseMatrix: RowID out of range");
 		}
 		if (j < 0 || j >= iNumberOfColumns) {
-			throw new Exception("get error in DenseMatrix: ColumnID out of range");
+			throw new IOException("get error in DenseMatrix: ColumnID out of range");
 		}
 		return pSumData[i][j];
 	}
 	
-	public void add(int i, int j, double dValue) throws Exception {
+	public void add(int i, int j, double dValue) throws IOException {
 		if (i < 0 || i >= iNumberOfRows) {
-			throw new Exception("add error in DenseMatrix: RowID out of range");
+			throw new IOException("add error in DenseMatrix: RowID out of range");
 		}
 		if (j < 0 || j >= iNumberOfColumns) {
-			throw new Exception("add error in DenseMatrix: ColumnID out of range");
+			throw new IOException("add error in DenseMatrix: ColumnID out of range");
 		}
 		pData[i][j] += dValue;
 	}
@@ -162,17 +157,17 @@ public class Matrix {
 		}
 	}
 	
-	public void accumulatedByGrad(int i, int j) throws Exception {
+	public void accumulatedByGrad(int i, int j) throws IOException {
 		if (i < 0 || i >= iNumberOfRows) {
-			throw new Exception("add error in DenseMatrix: RowID out of range");
+			throw new IOException("add error in DenseMatrix: RowID out of range");
 		}
 		if (j < 0 || j >= iNumberOfColumns) {
-			throw new Exception("add error in DenseMatrix: ColumnID out of range");
+			throw new IOException("add error in DenseMatrix: ColumnID out of range");
 		}
 		pSumData[i][j] += pData[i][j] * pData[i][j];
 	}	
 	
-	public boolean load(String fnInput) throws Exception {
+	public boolean load(String fnInput) throws IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				new FileInputStream(fnInput), "UTF-8"));
 		
@@ -182,7 +177,7 @@ public class Matrix {
 				.split(":; ", line));
 		if (iNumberOfRows != Integer.parseInt(first_line[1]) || 
 				iNumberOfColumns != Integer.parseInt(first_line[3])) {
-			throw new Exception("load error in DenseMatrix: row/column number incorrect");
+			throw new IOException("load error in DenseMatrix: row/column number incorrect");
 		}
 		
 		int iRowID = 0;
@@ -190,10 +185,10 @@ public class Matrix {
 			String[] tokens = StringSplitter.RemoveEmptyEntries(StringSplitter
 					.split("\t ", line));
 			if (iRowID < 0 || iRowID >= iNumberOfRows) {
-				throw new Exception("load error in DenseMatrix: RowID out of range");
+				throw new IOException("load error in DenseMatrix: RowID out of range");
 			}
 			if (tokens.length != iNumberOfColumns) {
-				throw new Exception("load error in DenseMatrix: ColumnID out of range");
+				throw new IOException("load error in DenseMatrix: ColumnID out of range");
 			}
 			for (int iColumnID = 0; iColumnID < tokens.length; iColumnID++) {
 				pData[iRowID][iColumnID] = Double.parseDouble(tokens[iColumnID]);
@@ -205,7 +200,7 @@ public class Matrix {
 		return true;
 	}
 	
-	public void output(String fnOutput) throws Exception {
+	public void output(String fnOutput) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
 				new FileOutputStream(fnOutput), "UTF-8"));
 		
