@@ -90,9 +90,9 @@ public class RuleSet {
 				pRule.add(new Rule(fstTriple, sndTriple));
 			}
 			else{
-				int iTrdHead = Integer.parseInt(tokens[7]);
-				int iTrdTail = Integer.parseInt(tokens[9]);
-				int iTrdRelation = Integer.parseInt(tokens[8]);
+				int iTrdHead = Integer.parseInt(tokens[6]);
+				int iTrdTail = Integer.parseInt(tokens[8]);
+				int iTrdRelation = Integer.parseInt(tokens[7]);
 //				System.out.println(iTrdHead+" "+iTrdTail+" "+iTrdRelation);
 				
 				if (iTrdHead < 0 || iTrdHead >= iNumberOfEntities) {
